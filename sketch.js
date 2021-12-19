@@ -1,7 +1,8 @@
 var balloon,balloonImage1,balloonImage2;
 // crea aquí la base de datos y la variable de posición 
-var globopos= databse.ref('ballon/height');
-globopos.on("value", readPosition, showError());
+var height;
+var database;
+
 
 function preload(){
    bg =loadImage("cityImage.png");
@@ -19,6 +20,9 @@ function setup() {
   balloon=createSprite(250,450,150,150);
   balloon.addAnimation("hotAirBalloon",balloonImage1);
   balloon.scale=0.5;
+
+  var globopos= database.ref('balloon/height');
+  globopos.on("value", readHeight, showError);
 
   textSize(20); 
 }
@@ -49,7 +53,7 @@ function draw() {
     balloon.scale=balloon.scale+0.01;
     //escribe el código para mover el globo aerostático en dirección descendente
   }
-
+ 
   drawSprites();
   fill(0);
   stroke("white");
@@ -58,12 +62,17 @@ function draw() {
 }
 
 function update(x,y){
-  database.ref('ballon/height').set({
+  database.ref('balloon/height').set({
     'x':height.x +x,
     'y':height.y + y
   })
 }
 
+function readHeight(data){
+  height = data.val();
+  balloon.x = height.x;
+  balloon.y = height.y;
+}
 function showError(){
   console.log("error al escribir en la base de datos")
 }
